@@ -7,14 +7,11 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  format:
+    name: Format Check
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
       
       - uses: subosito/flutter-action@v2
         with:
@@ -27,8 +24,39 @@ jobs:
       - name: Verify formatting
         run: dart format --output=none --set-exit-if-changed .
 
+  analyze:
+    name: Code Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.4'
+          channel: 'stable'
+      
+      - name: Install dependencies
+        run: flutter pub get
+
       - name: Analyze project source
         run: flutter analyze
+
+  test:
+    name: Tests with Coverage
+    runs-on: ubuntu-latest
+    outputs:
+      coverage_percentage: ${{ steps.coverage.outputs.percentage }}
+      test_outcome: ${{ steps.tests.outcome }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.4'
+          channel: 'stable'
+      
+      - name: Install dependencies
+        run: flutter pub get
 
       - name: Install lcov
         run: |
@@ -40,46 +68,106 @@ jobs:
         continue-on-error: true
         run: flutter test --coverage
 
+      - name: Debug coverage file
+        if: always()
+        run: |
+          if [ -f coverage/lcov.info ]; then
+            echo "=== Coverage file exists ==="
+            echo "File size: $(wc -l < coverage/lcov.info) lines"
+            echo "=== First 20 lines of coverage file ==="
+            head -20 coverage/lcov.info
+            echo "=== Looking for LF and LH lines ==="
+            grep -E '^(LF|LH):' coverage/lcov.info | head -5
+          else
+            echo "Coverage file not found!"
+            ls -la coverage/ || echo "Coverage directory doesn't exist"
+          fi
+
       - name: Parse coverage percentage
         id: coverage
         if: always()
         run: |
           if [ -f coverage/lcov.info ]; then
-            # Try to extract coverage from lcov summary first
-            LCOV_SUMMARY=$(lcov --summary coverage/lcov.info 2>&1)
-            COVERAGE=$(echo "$LCOV_SUMMARY" | grep -E 'lines\.\.\.\.\.\.: [0-9.]+%' | grep -oE '[0-9.]+' | head -1)
+            echo "Parsing coverage from lcov.info..."
             
-            if [ -z "$COVERAGE" ]; then
-              # Fallback: calculate from lcov.info file directly
-              TOTAL=$(grep -E '^LF:' coverage/lcov.info | head -1 | grep -oE '[0-9]+' | head -1)
-              HIT=$(grep -E '^LH:' coverage/lcov.info | head -1 | grep -oE '[0-9]+' | head -1)
+            # Method 1: Try to use lcov --summary (most reliable)
+            LCOV_SUMMARY=$(lcov --summary coverage/lcov.info 2>&1 || echo "")
+            echo "=== LCOV Summary output ==="
+            echo "$LCOV_SUMMARY"
+            
+            # Extract percentage from summary (look for "lines......: XX.X%")
+            # Pattern: "lines......: XX.X%"
+            COVERAGE=$(echo "$LCOV_SUMMARY" | grep -E 'lines\.\.\.\.\.\.:\s*[0-9.]+%' | sed 's/.*lines\.\.\.\.\.\.:\s*\([0-9.]*\)%.*/\1/' | head -1)
+            
+            if [ -z "$COVERAGE" ] || [ "$COVERAGE" = "" ]; then
+              echo "Method 1 failed, trying method 2..."
               
-              if [ -n "$TOTAL" ] && [ -n "$HIT" ] && [ "$TOTAL" -gt 0 ]; then
+              # Method 2: Calculate from LF and LH totals in the file
+              # Sum all LF (lines found) and LH (lines hit) values
+              TOTAL=$(grep -E '^LF:' coverage/lcov.info | awk -F: '{sum+=$2} END {print sum+0}')
+              HIT=$(grep -E '^LH:' coverage/lcov.info | awk -F: '{sum+=$2} END {print sum+0}')
+              
+              echo "Total lines found (LF): $TOTAL"
+              echo "Total lines hit (LH): $HIT"
+              
+              if [ -n "$TOTAL" ] && [ -n "$HIT" ] && [ "$TOTAL" != "0" ] && [ "$TOTAL" -gt 0 ]; then
                 COVERAGE=$(awk "BEGIN {printf \"%.1f\", ($HIT/$TOTAL)*100}")
+                echo "Calculated coverage: $COVERAGE%"
               else
-                # Last fallback: try to parse from summary text
-                COVERAGE=$(echo "$LCOV_SUMMARY" | grep -E '[0-9.]+%' | head -1 | grep -oE '[0-9.]+' | head -1)
-                if [ -z "$COVERAGE" ]; then
+                echo "Method 2 failed, trying method 3..."
+                
+                # Method 3: Try to extract any percentage from summary text
+                COVERAGE=$(echo "$LCOV_SUMMARY" | grep -oE '[0-9]+\.[0-9]+%' | head -1 | sed 's/%//')
+                
+                if [ -z "$COVERAGE" ] || [ "$COVERAGE" = "" ]; then
                   COVERAGE="0.0"
+                  echo "All methods failed, defaulting to 0.0%"
+                else
+                  echo "Extracted coverage from summary text: $COVERAGE%"
                 fi
               fi
+            else
+              echo "Extracted coverage from summary: $COVERAGE%"
             fi
+            
+            # Ensure COVERAGE is a valid number
+            if ! echo "$COVERAGE" | grep -qE '^[0-9]+\.?[0-9]*$'; then
+              echo "Warning: Invalid coverage value '$COVERAGE', defaulting to 0.0"
+              COVERAGE="0.0"
+            fi
+            
             echo "percentage=$COVERAGE" >> $GITHUB_OUTPUT
-            echo "Coverage: $COVERAGE%"
+            echo "=== Final coverage: $COVERAGE% ==="
           else
+            echo "Coverage file not found at coverage/lcov.info"
             echo "percentage=0.0" >> $GITHUB_OUTPUT
-            echo "Coverage file not found"
           fi
 
+      - name: Output coverage results
+        if: always()
+        run: |
+          echo "Test outcome: ${{ steps.tests.outcome }}"
+          echo "Coverage percentage: ${{ steps.coverage.outputs.percentage }}%"
+
+  update-badge:
+    name: Update Coverage Badge
+    needs: test
+    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+      
       - name: Update coverage badge in README files
-        if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           # Use Python to update README files
           python3 << 'PYTHON_SCRIPT'
           import re
           import os
           
-          # Get coverage percentage and test outcome
+          # Get coverage percentage and test outcome from previous job
           coverage_percent = os.environ.get('COVERAGE_PERCENT', '0.0')
           test_outcome = os.environ.get('TEST_OUTCOME', '')
           
@@ -131,11 +219,10 @@ jobs:
                   pass
           PYTHON_SCRIPT
         env:
-          COVERAGE_PERCENT: ${{ steps.coverage.outputs.percentage }}
-          TEST_OUTCOME: ${{ steps.tests.outcome }}
+          COVERAGE_PERCENT: ${{ needs.test.outputs.coverage_percentage || '0.0' }}
+          TEST_OUTCOME: ${{ needs.test.outputs.test_outcome || 'failure' }}
 
       - name: Commit and push README updates
-        if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
