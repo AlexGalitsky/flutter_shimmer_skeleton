@@ -30,12 +30,48 @@ jobs:
       - name: Analyze project source
         run: flutter analyze
 
-      - name: Run tests
+      - name: Install lcov
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lcov
+
+      - name: Run tests with coverage
         id: tests
         continue-on-error: true
-        run: flutter test
+        run: flutter test --coverage
 
-      - name: Update test badge in README files
+      - name: Parse coverage percentage
+        id: coverage
+        if: always()
+        run: |
+          if [ -f coverage/lcov.info ]; then
+            # Try to extract coverage from lcov summary first
+            LCOV_SUMMARY=$(lcov --summary coverage/lcov.info 2>&1)
+            COVERAGE=$(echo "$LCOV_SUMMARY" | grep -E 'lines\.\.\.\.\.\.: [0-9.]+%' | grep -oE '[0-9.]+' | head -1)
+            
+            if [ -z "$COVERAGE" ]; then
+              # Fallback: calculate from lcov.info file directly
+              TOTAL=$(grep -E '^LF:' coverage/lcov.info | head -1 | grep -oE '[0-9]+' | head -1)
+              HIT=$(grep -E '^LH:' coverage/lcov.info | head -1 | grep -oE '[0-9]+' | head -1)
+              
+              if [ -n "$TOTAL" ] && [ -n "$HIT" ] && [ "$TOTAL" -gt 0 ]; then
+                COVERAGE=$(awk "BEGIN {printf \"%.1f\", ($HIT/$TOTAL)*100}")
+              else
+                # Last fallback: try to parse from summary text
+                COVERAGE=$(echo "$LCOV_SUMMARY" | grep -E '[0-9.]+%' | head -1 | grep -oE '[0-9.]+' | head -1)
+                if [ -z "$COVERAGE" ]; then
+                  COVERAGE="0.0"
+                fi
+              fi
+            fi
+            echo "percentage=$COVERAGE" >> $GITHUB_OUTPUT
+            echo "Coverage: $COVERAGE%"
+          else
+            echo "percentage=0.0" >> $GITHUB_OUTPUT
+            echo "Coverage file not found"
+          fi
+
+      - name: Update coverage badge in README files
         if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           # Use Python to update README files
@@ -43,18 +79,35 @@ jobs:
           import re
           import os
           
-          # Determine badge based on test outcome
+          # Get coverage percentage and test outcome
+          coverage_percent = os.environ.get('COVERAGE_PERCENT', '0.0')
           test_outcome = os.environ.get('TEST_OUTCOME', '')
+          
+          # Determine color based on coverage percentage
+          try:
+              coverage_float = float(coverage_percent)
+              if coverage_float >= 80:
+                  color = 'success'
+              elif coverage_float >= 60:
+                  color = 'yellow'
+              elif coverage_float >= 40:
+                  color = 'orange'
+              else:
+                  color = 'critical'
+          except ValueError:
+              color = 'lightgrey'
+          
+          # Create badge with coverage percentage
           if test_outcome == 'success':
-              badge = '![Tests](https://img.shields.io/badge/tests-passing-success?style=flat-square)'
+              badge = f'![Coverage](https://img.shields.io/badge/coverage-{coverage_percent}%25-{color}?style=flat-square)'
           else:
-              badge = '![Tests](https://img.shields.io/badge/tests-failing-critical?style=flat-square)'
+              badge = f'![Coverage](https://img.shields.io/badge/coverage-{coverage_percent}%25-{color}?style=flat-square&label=tests-failing)'
           
           # Pattern to find and replace the test badge
           pattern = r'<!-- TEST_BADGE_START -->.*?<!-- TEST_BADGE_END -->'
           replacement = f'<!-- TEST_BADGE_START -->\n{badge}\n<!-- TEST_BADGE_END -->'
           
-          # Update README.md
+          # Update README.md and README.ru.md
           for filename in ['README.md', 'README.ru.md']:
               try:
                   with open(filename, 'r', encoding='utf-8') as f:
@@ -78,6 +131,7 @@ jobs:
                   pass
           PYTHON_SCRIPT
         env:
+          COVERAGE_PERCENT: ${{ steps.coverage.outputs.percentage }}
           TEST_OUTCOME: ${{ steps.tests.outcome }}
 
       - name: Commit and push README updates
@@ -85,4 +139,4 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git diff --exit-code README.md README.ru.md || (git add README.md README.ru.md && git commit -m "chore: update test status badge [skip ci]" && git push)
+          git diff --exit-code README.md README.ru.md || (git add README.md README.ru.md && git commit -m "chore: update coverage badge [skip ci]" && git push)
