@@ -4,6 +4,9 @@ version: 0.0.3
 homepage: https://github.com/AlexGalitsky/flutter_shimmer_skeleton
 repository: https://github.com/AlexGalitsky/flutter_shimmer_skeleton
 issue_tracker: https://github.com/AlexGalitsky/flutter_shimmer_skeleton/issues
+screenshots:
+  - description: 'Flutter Shimmer skeleton logo.'
+    path: images/logo.png
 topics:
   - shimmer
   - skeleton
