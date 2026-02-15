@@ -1,0 +1,17 @@
+name: flutter_shimmer_skeleton
+description: A Flutter package that provides shimmer loading skeleton widgets based on the official Flutter documentation.
+version: 0.0.1
+homepage: https://github.com/goodwin/flutter_shimmer_skeleton
+
+environment:
+  sdk: ^3.10.3
+  flutter: '>=3.3.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
