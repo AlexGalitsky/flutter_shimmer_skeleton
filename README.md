@@ -5,7 +5,7 @@
 # flutter_shimmer_skeleton
 
 <!-- TEST_BADGE_START -->
-![Coverage](https://img.shields.io/badge/coverage-......%25-lightgrey?style=flat-square)
+![Coverage](https://img.shields.io/badge/coverage-70.7%25-yellow?style=flat-square)
 <!-- TEST_BADGE_END -->
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)
