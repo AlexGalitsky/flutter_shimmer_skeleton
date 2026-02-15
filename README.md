@@ -1,5 +1,9 @@
 # flutter_shimmer_skeleton
 
+<!-- TEST_BADGE_START -->
+![Tests](https://img.shields.io/badge/tests-passing-success?style=flat-square)
+<!-- TEST_BADGE_END -->
+
 A Flutter package that provides shimmer loading skeleton widgets based on the [official Flutter documentation](https://docs.flutter.dev/cookbook/effects/shimmer-loading).
 
 ## Features
