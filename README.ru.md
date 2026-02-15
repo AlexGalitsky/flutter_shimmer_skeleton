@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="images/logo.png" alt="flutter_shimmer_skeleton" width="200"/>
+</div>
+
 # flutter_shimmer_skeleton
 
 <!-- TEST_BADGE_START -->
