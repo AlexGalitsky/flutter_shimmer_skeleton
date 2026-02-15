@@ -1,3 +1,11 @@
+## 0.0.3
+
+* Fix docs
+
+## 0.0.2
+
+* Update package info
+
 ## 0.0.1
 
 * Initial release.
