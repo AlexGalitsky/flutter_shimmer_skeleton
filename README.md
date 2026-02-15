@@ -8,6 +8,10 @@
 ![Tests](https://img.shields.io/badge/tests-passing-success?style=flat-square)
 <!-- TEST_BADGE_END -->
 
+![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)
+![GitHub Stars](https://img.shields.io/github/stars/AlexGalitsky/flutter_shimmer_skeleton.svg?style=flat-square&label=stars)
+![Pub Version](https://img.shields.io/pub/v/flutter_shimmer_skeleton.svg?style=flat-square)
+
 A Flutter package that provides shimmer loading skeleton widgets based on the [official Flutter documentation](https://docs.flutter.dev/cookbook/effects/shimmer-loading).
 
 ## Features
