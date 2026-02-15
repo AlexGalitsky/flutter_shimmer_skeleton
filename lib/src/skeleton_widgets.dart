@@ -92,10 +92,7 @@ class SkeletonCircle extends StatelessWidget {
       child: Container(
         width: size,
         height: size,
-        decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-        ),
+        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
       ),
     );
   }
@@ -157,29 +154,23 @@ class SkeletonText extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
-      children: List.generate(
-        lines,
-        (index) {
-          final bool isLastLine = index == lines - 1;
-          final double? lineWidth = isLastLine && lastLineWidth != null
-              ? lastLineWidth
-              : width;
+      children: List.generate(lines, (index) {
+        final bool isLastLine = index == lines - 1;
+        final double? lineWidth = isLastLine && lastLineWidth != null
+            ? lastLineWidth
+            : width;
 
-          return Padding(
-            padding: EdgeInsets.only(
-              bottom: isLastLine ? 0 : spacing,
-            ),
-            child: SkeletonBox(
-              width: lineWidth,
-              height: lineHeight,
-              borderRadius: borderRadius ??
-                  BorderRadius.circular(lineHeight / 2),
-              color: color,
-              isLoading: isLoading,
-            ),
-          );
-        },
-      ),
+        return Padding(
+          padding: EdgeInsets.only(bottom: isLastLine ? 0 : spacing),
+          child: SkeletonBox(
+            width: lineWidth,
+            height: lineHeight,
+            borderRadius: borderRadius ?? BorderRadius.circular(lineHeight / 2),
+            color: color,
+            isLoading: isLoading,
+          ),
+        );
+      }),
     );
   }
 }
@@ -240,11 +231,7 @@ class SkeletonListItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (hasAvatar) ...[
-          SkeletonCircle(
-            size: avatarSize,
-            color: color,
-            isLoading: isLoading,
-          ),
+          SkeletonCircle(size: avatarSize, color: color, isLoading: isLoading),
           SizedBox(width: spacing),
         ],
         Expanded(
@@ -341,9 +328,7 @@ class SkeletonCard extends StatelessWidget {
           if (hasImage) ...[
             SkeletonBox(
               width: double.infinity,
-              height: imageAspectRatio != null
-                  ? null
-                  : imageHeight,
+              height: imageAspectRatio != null ? null : imageHeight,
               borderRadius: borderRadius,
               color: color,
               isLoading: isLoading,

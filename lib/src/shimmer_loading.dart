@@ -23,7 +23,11 @@ class ShimmerLoading extends StatefulWidget {
   ///
   /// The [isLoading] parameter determines whether to show the shimmer effect.
   /// The [child] parameter is the widget to apply the shimmer to.
-  const ShimmerLoading({super.key, required this.isLoading, required this.child});
+  const ShimmerLoading({
+    super.key,
+    required this.isLoading,
+    required this.child,
+  });
 
   /// Whether the shimmer effect should be active.
   final bool isLoading;

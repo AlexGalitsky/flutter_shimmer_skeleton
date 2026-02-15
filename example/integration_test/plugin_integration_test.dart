@@ -16,11 +16,7 @@ void main() {
 
   testWidgets('Shimmer widgets render correctly', (WidgetTester tester) async {
     const shimmerGradient = LinearGradient(
-      colors: [
-        Color(0xFFEBEBF4),
-        Color(0xFFF4F4F4),
-        Color(0xFFEBEBF4),
-      ],
+      colors: [Color(0xFFEBEBF4), Color(0xFFF4F4F4), Color(0xFFEBEBF4)],
       stops: [0.1, 0.3, 0.4],
       begin: Alignment(-1, -0.3),
       end: Alignment(1, 0.3),
@@ -34,27 +30,15 @@ void main() {
             linearGradient: shimmerGradient,
             child: Column(
               children: [
-                SkeletonBox(
-                  width: 200,
-                  height: 100,
-                ),
+                SkeletonBox(width: 200, height: 100),
                 SizedBox(height: 16),
                 SkeletonCircle(size: 50),
                 SizedBox(height: 16),
-                SkeletonText(
-                  lines: 3,
-                  lineHeight: 16,
-                ),
+                SkeletonText(lines: 3, lineHeight: 16),
                 SizedBox(height: 16),
-                SkeletonListItem(
-                  hasAvatar: true,
-                  hasSubtitle: true,
-                ),
+                SkeletonListItem(hasAvatar: true, hasSubtitle: true),
                 SizedBox(height: 16),
-                SkeletonCard(
-                  hasImage: true,
-                  hasText: true,
-                ),
+                SkeletonCard(hasImage: true, hasText: true),
               ],
             ),
           ),

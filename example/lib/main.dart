@@ -39,11 +39,7 @@ class _ExamplePageState extends State<ExamplePage> {
 
   // Default shimmer gradient based on Flutter documentation
   static const _shimmerGradient = LinearGradient(
-    colors: [
-      Color(0xFFEBEBF4),
-      Color(0xFFF4F4F4),
-      Color(0xFFEBEBF4),
-    ],
+    colors: [Color(0xFFEBEBF4), Color(0xFFF4F4F4), Color(0xFFEBEBF4)],
     stops: [0.1, 0.3, 0.4],
     begin: Alignment(-1, -0.3),
     end: Alignment(1, 0.3),
@@ -156,10 +152,7 @@ class _ExamplePageState extends State<ExamplePage> {
                 const SizedBox(height: 8),
                 Text(
                   'Subtitle text here',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                 ),
               ],
             ),
@@ -284,11 +277,7 @@ class _ExamplePageState extends State<ExamplePage> {
                 SkeletonCircle(size: 40),
                 SizedBox(width: 16),
                 Expanded(
-                  child: SkeletonText(
-                    lines: 2,
-                    lineHeight: 14,
-                    spacing: 6,
-                  ),
+                  child: SkeletonText(lines: 2, lineHeight: 14, spacing: 6),
                 ),
               ],
             ),
@@ -300,9 +289,7 @@ class _ExamplePageState extends State<ExamplePage> {
                 color: Colors.green[100],
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Center(
-                child: Text('Custom Box Content'),
-              ),
+              child: const Center(child: Text('Custom Box Content')),
             ),
             const SizedBox(height: 16),
             Row(
@@ -316,9 +303,7 @@ class _ExamplePageState extends State<ExamplePage> {
                   ),
                 ),
                 const SizedBox(width: 16),
-                const Expanded(
-                  child: Text('Custom content with avatar'),
-                ),
+                const Expanded(child: Text('Custom content with avatar')),
               ],
             ),
           ],

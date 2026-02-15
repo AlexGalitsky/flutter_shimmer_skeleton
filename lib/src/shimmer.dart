@@ -60,22 +60,14 @@ class ShimmerState extends State<Shimmer> with SingleTickerProviderStateMixin {
     super.initState();
 
     _shimmerController = AnimationController.unbounded(vsync: this)
-      ..repeat(
-        min: -0.5,
-        max: 1.5,
-        period: widget.period,
-      );
+      ..repeat(min: -0.5, max: 1.5, period: widget.period);
   }
 
   @override
   void didUpdateWidget(Shimmer oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.period != widget.period) {
-      _shimmerController.repeat(
-        min: -0.5,
-        max: 1.5,
-        period: widget.period,
-      );
+      _shimmerController.repeat(min: -0.5, max: 1.5, period: widget.period);
     }
   }
 
@@ -87,21 +79,22 @@ class ShimmerState extends State<Shimmer> with SingleTickerProviderStateMixin {
 
   /// The current gradient with the shimmer transform applied.
   LinearGradient get gradient => LinearGradient(
-        colors: widget.linearGradient.colors,
-        stops: widget.linearGradient.stops,
-        begin: widget.linearGradient.begin,
-        end: widget.linearGradient.end,
-        transform: _SlidingGradientTransform(
-          slidePercent: _shimmerController.value,
-        ),
-      );
+    colors: widget.linearGradient.colors,
+    stops: widget.linearGradient.stops,
+    begin: widget.linearGradient.begin,
+    end: widget.linearGradient.end,
+    transform: _SlidingGradientTransform(
+      slidePercent: _shimmerController.value,
+    ),
+  );
 
   /// Whether the shimmer widget has been laid out and has a size.
   bool get isSized =>
       (context.findRenderObject() as RenderBox?)?.hasSize ?? false;
 
   /// The size of the shimmer widget.
-  Size get size => (context.findRenderObject() as RenderBox?)?.size ?? Size.zero;
+  Size get size =>
+      (context.findRenderObject() as RenderBox?)?.size ?? Size.zero;
 
   /// Gets the offset of a descendant widget within the shimmer widget.
   Offset getDescendantOffset({
