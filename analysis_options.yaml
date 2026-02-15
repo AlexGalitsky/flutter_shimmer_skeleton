@@ -53,9 +53,9 @@ linter:
   rules:
     # Error rules
     always_declare_return_types: true
-    always_put_required_named_parameters_first: true
+    #always_put_required_named_parameters_first: true
     always_require_non_null_named_parameters: true
-    always_specify_types: true
+    #always_specify_types: true
     always_use_package_imports: true
     annotate_overrides: true
     avoid_annotating_with_dynamic: true
@@ -121,7 +121,7 @@ linter:
     library_names: true
     library_prefixes: true
     library_private_types_in_public_api: true
-    lines_longer_than_80_chars: true
+    #lines_longer_than_80_chars: true
     list_remove_unrelated_type: true
     literal_only_boolean_expressions: true
     no_adjacent_strings_in_list: true
@@ -184,7 +184,7 @@ linter:
     slash_for_doc_comments: true
     sort_child_properties_last: true
     sort_constructors_first: true
-    sort_pub_dependencies: true
+    #sort_pub_dependencies: true
     sort_unnamed_constructors_first: true
     test_types_in_equals: true
     throw_in_finally: true

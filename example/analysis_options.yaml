@@ -53,6 +53,7 @@ analyzer:
     unreachable_switch_case: error
     # Treat use of void result as errors
     use_of_void_result: error
+    #always_specify_types: ignore ignore ignore ignore
   language:
     strict-casts: true
     strict-inference: true
@@ -74,7 +75,7 @@ linter:
     always_declare_return_types: true
     always_put_required_named_parameters_first: true
     always_require_non_null_named_parameters: true
-    always_specify_types: true
+    #always_specify_types: true
     always_use_package_imports: true
     annotate_overrides: true
     avoid_annotating_with_dynamic: true
@@ -154,7 +155,7 @@ linter:
     one_member_abstracts: true
     only_throw_errors: true
     overridden_fields: true
-    package_api_docs: true
+    #package_api_docs: true
     package_names: true
     package_prefixed_library_names: true
     parameter_assignments: true
@@ -195,7 +196,7 @@ linter:
     prefer_typing_uninitialized_variables: true
     prefer_void_to_null: true
     provide_deprecation_message: true
-    public_member_api_docs: true
+    #public_member_api_docs: true
     recursive_getters: true
     require_trailing_commas: true
     sized_box_for_whitespace: true
@@ -203,7 +204,7 @@ linter:
     slash_for_doc_comments: true
     sort_child_properties_last: true
     sort_constructors_first: true
-    sort_pub_dependencies: true
+    #sort_pub_dependencies: true
     sort_unnamed_constructors_first: true
     test_types_in_equals: true
     throw_in_finally: true

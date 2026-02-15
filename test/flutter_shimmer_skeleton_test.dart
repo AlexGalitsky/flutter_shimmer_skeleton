@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_shimmer_skeleton/flutter_shimmer_skeleton.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Shimmer Widget Tests', () {
@@ -10,10 +10,10 @@ void main() {
       );
 
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Shimmer(
             linearGradient: shimmerGradient,
-            child: const Text('Test'),
+            child: Text('Test'),
           ),
         ),
       );

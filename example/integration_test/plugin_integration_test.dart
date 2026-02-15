@@ -7,10 +7,9 @@
 // https://flutter.dev/to/integration-testing
 
 import 'package:flutter/material.dart';
+import 'package:flutter_shimmer_skeleton/flutter_shimmer_skeleton.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-
-import 'package:flutter_shimmer_skeleton/flutter_shimmer_skeleton.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -23,36 +22,36 @@ void main() {
         Color(0xFFEBEBF4),
       ],
       stops: [0.1, 0.3, 0.4],
-      begin: Alignment(-1.0, -0.3),
-      end: Alignment(1.0, 0.3),
+      begin: Alignment(-1, -0.3),
+      end: Alignment(1, 0.3),
       tileMode: TileMode.clamp,
     );
 
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: Scaffold(
           body: Shimmer(
             linearGradient: shimmerGradient,
             child: Column(
               children: [
-                const SkeletonBox(
+                SkeletonBox(
                   width: 200,
                   height: 100,
                 ),
-                const SizedBox(height: 16),
-                const SkeletonCircle(size: 50),
-                const SizedBox(height: 16),
-                const SkeletonText(
+                SizedBox(height: 16),
+                SkeletonCircle(size: 50),
+                SizedBox(height: 16),
+                SkeletonText(
                   lines: 3,
                   lineHeight: 16,
                 ),
-                const SizedBox(height: 16),
-                const SkeletonListItem(
+                SizedBox(height: 16),
+                SkeletonListItem(
                   hasAvatar: true,
                   hasSubtitle: true,
                 ),
-                const SizedBox(height: 16),
-                const SkeletonCard(
+                SizedBox(height: 16),
+                SkeletonCard(
                   hasImage: true,
                   hasText: true,
                 ),

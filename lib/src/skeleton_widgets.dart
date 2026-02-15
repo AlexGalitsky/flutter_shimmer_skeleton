@@ -160,8 +160,8 @@ class SkeletonText extends StatelessWidget {
       children: List.generate(
         lines,
         (index) {
-          final isLastLine = index == lines - 1;
-          final lineWidth = isLastLine && lastLineWidth != null
+          final bool isLastLine = index == lines - 1;
+          final double? lineWidth = isLastLine && lastLineWidth != null
               ? lastLineWidth
               : width;
 

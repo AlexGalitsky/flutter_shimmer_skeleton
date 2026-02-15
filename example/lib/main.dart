@@ -45,8 +45,8 @@ class _ExamplePageState extends State<ExamplePage> {
       Color(0xFFEBEBF4),
     ],
     stops: [0.1, 0.3, 0.4],
-    begin: Alignment(-1.0, -0.3),
-    end: Alignment(1.0, 0.3),
+    begin: Alignment(-1, -0.3),
+    end: Alignment(1, 0.3),
     tileMode: TileMode.clamp,
   );
 
@@ -118,8 +118,8 @@ class _ExamplePageState extends State<ExamplePage> {
 
   Widget _buildListItem() {
     if (_isLoading) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      return const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: SkeletonListItem(
           hasAvatar: true,
           hasSubtitle: true,
@@ -171,12 +171,12 @@ class _ExamplePageState extends State<ExamplePage> {
 
   Widget _buildCardExample() {
     if (_isLoading) {
-      return SkeletonCard(
+      return const SkeletonCard(
         hasImage: true,
         imageHeight: 200,
         hasText: true,
         textLines: 2,
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
       );
     }
 
@@ -188,7 +188,7 @@ class _ExamplePageState extends State<ExamplePage> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
+            color: Colors.grey.withValues(alpha: 0.2),
             spreadRadius: 1,
             blurRadius: 5,
             offset: const Offset(0, 3),
@@ -226,8 +226,8 @@ class _ExamplePageState extends State<ExamplePage> {
 
   Widget _buildTextExample() {
     if (_isLoading) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+      return const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 24),
         child: SkeletonText(
           lines: 3,
           lineHeight: 16,
@@ -279,10 +279,10 @@ class _ExamplePageState extends State<ExamplePage> {
               borderRadius: BorderRadius.all(Radius.circular(8)),
             ),
             const SizedBox(height: 16),
-            Row(
+            const Row(
               children: [
-                const SkeletonCircle(size: 40),
-                const SizedBox(width: 16),
+                SkeletonCircle(size: 40),
+                SizedBox(width: 16),
                 Expanded(
                   child: SkeletonText(
                     lines: 2,

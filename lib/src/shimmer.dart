@@ -101,7 +101,7 @@ class ShimmerState extends State<Shimmer> with SingleTickerProviderStateMixin {
       (context.findRenderObject() as RenderBox?)?.hasSize ?? false;
 
   /// The size of the shimmer widget.
-  Size get size => (context.findRenderObject() as RenderBox).size;
+  Size get size => (context.findRenderObject() as RenderBox?)?.size ?? Size.zero;
 
   /// Gets the offset of a descendant widget within the shimmer widget.
   Offset getDescendantOffset({

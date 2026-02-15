@@ -23,11 +23,7 @@ class ShimmerLoading extends StatefulWidget {
   ///
   /// The [isLoading] parameter determines whether to show the shimmer effect.
   /// The [child] parameter is the widget to apply the shimmer to.
-  const ShimmerLoading({
-    super.key,
-    required this.isLoading,
-    required this.child,
-  });
+  const ShimmerLoading({super.key, required this.isLoading, required this.child});
 
   /// Whether the shimmer effect should be active.
   final bool isLoading;
@@ -84,9 +80,10 @@ class _ShimmerLoadingState extends State<ShimmerLoading> {
 
     final Size shimmerSize = shimmer.size;
     final LinearGradient gradient = shimmer.gradient;
-    final Offset offsetWithinShimmer = shimmer.getDescendantOffset(
-      descendant: context.findRenderObject() as RenderBox,
-    );
+    final renderBox = context.findRenderObject() as RenderBox?;
+    final Offset offsetWithinShimmer = renderBox == null
+        ? Offset.zero
+        : shimmer.getDescendantOffset(descendant: renderBox);
 
     return ShaderMask(
       blendMode: BlendMode.srcATop,
